@@ -52,16 +52,18 @@ public class MainActivity extends AppCompatActivity {
             calendar.add(Calendar.SECOND, alarmSecs);
 
             Intent intent = new Intent(getApplicationContext(), AlarmNotifier.class);
-            intent.putExtra("ALARM_SEC_VALUE", alarmSecs);
-            intent.putExtra("ALARM_MIN_VALUE", alarmMins);
-            intent.putExtra("Request Code", REQUEST_CODE);
+            intent.putExtra(AlarmNotifier.ALARM_MIN_VALUE, alarmMins);
+            intent.putExtra(AlarmNotifier.ALARM_SEC_VALUE, alarmSecs);
             pending = PendingIntent.getBroadcast(
                     getApplicationContext(), REQUEST_CODE, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
             );
             alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
             if (alarmManager != null) {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pending);
+                alarmManager.setAlarmClock(
+                        new AlarmManager.AlarmClockInfo(calendar.getTimeInMillis(), null),
+                        pending
+                );
                 isAlarmEnabled = true;
 
                 Toast.makeText(getApplicationContext(),
@@ -95,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        alarmManager.cancel(pending);
+        cancelAlarm();
     }
 
     private void cancelAlarm() {

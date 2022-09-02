@@ -15,11 +15,13 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class AlarmNotifier extends BroadcastReceiver {
+    public static final String ALARM_MIN_VALUE = "ALARM_MIN_VALUE";
+    public static final String ALARM_SEC_VALUE = "ALARM_SEC_VALUE";
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        int requestCode = intent.getIntExtra("Request Code", 0);
         PendingIntent pendingIntent = PendingIntent.getActivity(
-                context, requestCode, intent,
+                context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
@@ -29,7 +31,9 @@ public class AlarmNotifier extends BroadcastReceiver {
         long currentTime = System.currentTimeMillis();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss", Locale.JAPAN);
         String cTime = simpleDateFormat.format(currentTime);
-        String message = "時間になりました。 " + cTime;
+        int alarmMinValue = intent.getIntExtra(ALARM_MIN_VALUE, 0);
+        int alarmSecValue = intent.getIntExtra(ALARM_SEC_VALUE, 0);
+        String message = "時間になりました。 " + cTime + " 設定時間: " + alarmMinValue + "分" + alarmSecValue + "秒";
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(android.R.drawable.btn_star)
