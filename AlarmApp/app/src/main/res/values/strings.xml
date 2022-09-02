@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">AlarmApp</string>
+    <string name="alarm_start">alarm start</string>
+    <string name="alarm_cancel">alarm cancel</string>
+    <string name="default_alarm_sec_value">0</string>
+    <string name="alarm_sec_unit">秒</string>
+    <string name="default_alarm_min_value">0</string>
+    <string name="alarm_min_unit">分</string>
+</resources>
