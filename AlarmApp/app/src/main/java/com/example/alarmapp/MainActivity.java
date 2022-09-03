@@ -9,9 +9,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.alarmapp.databinding.ActivityMainBinding;
 
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TITLE = "Alarm App";
 
     private ActivityMainBinding binding;
+    private InputMethodManager inputMethodManager;
     private BroadcastReceiver receiver;
     private boolean isAlarmEnabled = false;
     private AlarmManager alarmManager;
@@ -33,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        inputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 
         receiver = new AlarmExecutionReceiver(new AlarmExecutionListenerImpl());
         IntentFilter intentFilter = new IntentFilter(AlarmExecutionReceiver.ALARM_EXECUTED);
@@ -97,6 +103,17 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT
             ).show();
         });
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        ConstraintLayout mainLayout = binding.mainLayout;
+        inputMethodManager.hideSoftInputFromWindow(
+                mainLayout.getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS
+        );
+        mainLayout.requestFocus();
+        return true;
     }
 
     @Override
