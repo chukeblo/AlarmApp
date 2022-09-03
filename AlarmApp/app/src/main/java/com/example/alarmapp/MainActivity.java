@@ -47,9 +47,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        // 開始ボタン
         binding.startButton.setOnClickListener(view -> {
-            // 時間をセットする
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
 
