@@ -4,7 +4,9 @@ import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -21,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TITLE = "Alarm App";
 
     private ActivityMainBinding binding;
+    private BroadcastReceiver receiver;
     private boolean isAlarmEnabled = false;
     private AlarmManager alarmManager;
     private PendingIntent pending;
@@ -30,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        receiver = new AlarmExecutionReceiver(new AlarmExecutionListenerImpl());
+        IntentFilter intentFilter = new IntentFilter(AlarmExecutionReceiver.ALARM_EXECUTED);
+        registerReceiver(receiver, intentFilter);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
@@ -98,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         cancelAlarm();
+        unregisterReceiver(receiver);
     }
 
     private void cancelAlarm() {
@@ -105,6 +113,23 @@ public class MainActivity extends AppCompatActivity {
             alarmManager.cancel(pending);
             pending = null;
             isAlarmEnabled = false;
+        }
+    }
+
+    private void updateIsAlarmEnabled() {
+        isAlarmEnabled = false;
+        pending = null;
+        Toast.makeText(
+                getApplicationContext(),
+                "alarm has been executed",
+                Toast.LENGTH_SHORT
+        ).show();
+    }
+
+    private class AlarmExecutionListenerImpl implements AlarmExecutionReceiver.AlarmExecutionListener {
+        @Override
+        public void onAlarmExecuted() {
+            updateIsAlarmEnabled();
         }
     }
 }

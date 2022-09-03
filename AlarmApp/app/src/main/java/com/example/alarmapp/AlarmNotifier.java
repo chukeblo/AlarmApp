@@ -46,5 +46,8 @@ public class AlarmNotifier extends BroadcastReceiver {
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
 
         notificationManagerCompat.notify(R.string.app_name, builder.build());
+
+        Intent executionIntent = new Intent(AlarmExecutionReceiver.ALARM_EXECUTED);
+        context.sendBroadcast(executionIntent);
     }
 }
