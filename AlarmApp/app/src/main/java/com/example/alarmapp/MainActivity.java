@@ -76,32 +76,21 @@ public class MainActivity extends AppCompatActivity {
                         pending
                 );
                 isAlarmEnabled = true;
-
-                Toast.makeText(getApplicationContext(),
-                        "alarm has been set",
-                        Toast.LENGTH_SHORT
-                ).show();
+                showToast("alarm has been set");
             }
         });
 
         binding.cancelButton.setOnClickListener(view -> {
             if (!isAlarmEnabled) {
-                Toast.makeText(getApplicationContext(),
-                        "no alarm has been set",
-                        Toast.LENGTH_SHORT
-                ).show();
+                showToast("no alarm has been set");
                 return;
             }
 
-            Intent intent = new Intent(getApplicationContext(), AlarmNotifier.class);
             if (alarmManager == null) {
                 alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
             }
             cancelAlarm();
-            Toast.makeText(getApplicationContext(),
-                    "alarm has been canceled",
-                    Toast.LENGTH_SHORT
-            ).show();
+            showToast("alarm has been canceled");
         });
     }
 
@@ -123,6 +112,10 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(receiver);
     }
 
+    private void showToast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
     private void cancelAlarm() {
         if (isAlarmEnabled && alarmManager != null && pending != null) {
             alarmManager.cancel(pending);
@@ -134,11 +127,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateIsAlarmEnabled() {
         isAlarmEnabled = false;
         pending = null;
-        Toast.makeText(
-                getApplicationContext(),
-                "alarm has been executed",
-                Toast.LENGTH_SHORT
-        ).show();
+        showToast("alarm has been executed");
     }
 
     private class AlarmExecutionListenerImpl implements AlarmExecutionReceiver.AlarmExecutionListener {
